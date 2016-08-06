@@ -64,9 +64,9 @@ instance monadStateCo :: ComonadStore s w => MonadState s (Co w) where
   state f = do
     s <- liftCo pos
     case f s of
-      Tuple a s1 -> liftCo (peek s1 $> a)
+      Tuple a s1 -> Co \w -> peek s1 w a
 
 instance monadWriterCo :: ComonadTraced t w => MonadWriter t (Co w) where
-  writer (Tuple a t) = liftCo (track t $> a)
+  writer (Tuple a t) = Co \w -> track t w a
   listen _ = unsafeCrashWith "monadWriterCo: listen not implemented"
   pass _ = unsafeCrashWith "monadWriterCo: pass not implemented"
