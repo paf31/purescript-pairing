@@ -6,6 +6,11 @@
     "bower_components",
     "output"
   ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/paf31/purescript-pairing.git"
+  },
   "dependencies": {
     "purescript-functor-products": "^1.0.0",
     "purescript-functor-coproducts": "^1.0.0",
