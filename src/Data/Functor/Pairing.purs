@@ -4,6 +4,7 @@
 
 module Data.Functor.Pairing
   ( Pairing
+  , type (⋈)
   , zap
   , sym
   , identity
