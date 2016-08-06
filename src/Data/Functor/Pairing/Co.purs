@@ -4,6 +4,7 @@
 module Data.Functor.Pairing.Co
   ( Co
   , runCo
+  , pairCo
   , liftCo
   , lowerCo
   ) where
