@@ -3,6 +3,7 @@
 
 module Data.Functor.Pairing.Co
   ( Co
+  , co
   , runCo
   , pairCo
   , liftCo
