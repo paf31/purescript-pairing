@@ -12,19 +12,19 @@ module Data.Functor.Pairing.Co
 
 import Prelude
 import Control.Comonad (class Comonad, extract)
-import Control.Comonad.Env.Class (class ComonadEnv, ask, local)
+import Control.Comonad.Env.Class (class ComonadAsk, class ComonadEnv, ask, local)
 import Control.Comonad.Store.Class (class ComonadStore, peek, pos)
 import Control.Comonad.Traced.Class (class ComonadTraced, track)
 import Control.Extend (class Extend, (=>>))
-import Control.Monad.Reader.Class (class MonadReader)
+import Control.Monad.Reader.Class (class MonadAsk, class MonadReader)
 import Control.Monad.State.Class (class MonadState)
-import Control.Monad.Writer.Class (class MonadWriter)
+import Control.Monad.Writer.Class (class MonadTell)
 import Data.Functor.Pairing (type (⋈))
-import Data.Identity (runIdentity)
+import Data.Identity (Identity(..))
+import Data.Newtype (unwrap)
 import Data.Tuple (Tuple(..))
-import Partial.Unsafe (unsafeCrashWith)
 
-data Co w a = Co (forall r. w (a -> r) -> r)
+newtype Co w a = Co (forall r. w (a -> r) -> r)
 
 co :: forall w a. (forall r. w (a -> r) -> r) -> Co w a
 co = Co
@@ -40,7 +40,7 @@ liftCo :: forall w s. Comonad w => (forall a. w a -> s) -> Co w s
 liftCo f = Co (extract <*> f)
 
 lowerCo :: forall w a s. Functor w => Co w s -> w a -> s
-lowerCo m = runIdentity <<< runCo m <<< (pure <$ _)
+lowerCo m = unwrap <<< runCo m <<< (Identity <$ _)
 
 instance functorCo :: Functor w => Functor (Co w) where
   map f (Co cow) = Co \w -> cow (map (_ <<< f) w)
@@ -56,8 +56,10 @@ instance bindCo :: Extend w => Bind (Co w) where
 
 instance monadCo :: Comonad w => Monad (Co w)
 
-instance monadReaderCo :: ComonadEnv e w => MonadReader e (Co w) where
+instance monadAskCo :: ComonadAsk e w => MonadAsk e (Co w) where
   ask = liftCo (ask :: forall a. w a -> e)
+
+instance monadReaderCo :: ComonadEnv e w => MonadReader e (Co w) where
   local f (Co x) = Co (x <<< local f)
 
 instance monadStateCo :: ComonadStore s w => MonadState s (Co w) where
@@ -66,7 +68,5 @@ instance monadStateCo :: ComonadStore s w => MonadState s (Co w) where
     case f s of
       Tuple a s1 -> Co \w -> peek s1 w a
 
-instance monadWriterCo :: ComonadTraced t w => MonadWriter t (Co w) where
-  writer (Tuple a t) = Co \w -> track t w a
-  listen _ = unsafeCrashWith "monadWriterCo: listen not implemented"
-  pass _ = unsafeCrashWith "monadWriterCo: pass not implemented"
+instance monadTellCo :: ComonadTraced t w => MonadTell t (Co w) where
+  tell t = Co \w -> track t w unit
