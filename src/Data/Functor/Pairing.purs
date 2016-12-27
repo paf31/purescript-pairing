@@ -17,11 +17,11 @@ module Data.Functor.Pairing
 
 import Prelude
 
-import Control.Comonad.Cofree (Cofree, head, tail)
+import Control.Comonad.Cofree (Cofree, explore)
 import Control.Comonad.Env.Trans (EnvT(..))
 import Control.Comonad.Store.Trans (StoreT(..))
 import Control.Comonad.Traced.Trans (TracedT(..))
-import Control.Monad.Free (Free, resume)
+import Control.Monad.Free (Free)
 import Control.Monad.Reader.Trans (ReaderT(..))
 import Control.Monad.State.Trans (StateT(..))
 import Control.Monad.Writer.Trans (WriterT(..))
@@ -76,8 +76,5 @@ writerTraced pairing f (WriterT writer) (TracedT gf) =
   pairing (\(Tuple a w) f1 -> f a (f1 w)) writer gf
 
 -- | `Free` pairs with `Cofree`.
-freeCofree :: forall f g. Functor f => f ⋈ g -> Free f ⋈ Cofree g
-freeCofree pairing f free cofree =
-  case resume free of
-    Left fa -> pairing (freeCofree pairing f) fa (tail cofree)
-    Right a -> f a (head cofree)
+freeCofree :: forall f g. (Functor f, Functor g) => f ⋈ g -> Free f ⋈ Cofree g
+freeCofree pairing f = explore (zap pairing) <<< map f
