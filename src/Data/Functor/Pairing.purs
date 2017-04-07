@@ -76,5 +76,5 @@ writerTraced pairing f (WriterT writer) (TracedT gf) =
   pairing (\(Tuple a w) f1 -> f a (f1 w)) writer gf
 
 -- | `Free` pairs with `Cofree`.
-freeCofree :: forall f g. (Functor f, Functor g) => f ⋈ g -> Free f ⋈ Cofree g
+freeCofree :: forall f g. Functor f => Functor g => f ⋈ g -> Free f ⋈ Cofree g
 freeCofree pairing f = explore (zap pairing) <<< map f
