@@ -15,7 +15,7 @@
     "purescript-functors": "^2.0.0",
     "purescript-identity": "^3.0.0",
     "purescript-transformers": "^3.0.0",
-    "purescript-free": "^4.0.0"
+    "purescript-free": "#phil/monadfree"
   },
   "devDependencies": {
     "purescript-psci-support": "^3.0.0"
