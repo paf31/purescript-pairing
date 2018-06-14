@@ -11,15 +11,18 @@ module Data.Functor.Pairing.Co
   ) where
 
 import Prelude
+
 import Control.Comonad (class Comonad, extract)
+import Control.Comonad.Cofree.Class (class ComonadCofree, unwrapCofree)
 import Control.Comonad.Env.Class (class ComonadAsk, class ComonadEnv, ask, local)
 import Control.Comonad.Store.Class (class ComonadStore, peek, pos)
 import Control.Comonad.Traced.Class (class ComonadTraced, track)
 import Control.Extend (class Extend, (=>>))
+import Control.Monad.Free.Class (class MonadFree)
 import Control.Monad.Reader.Class (class MonadAsk, class MonadReader)
 import Control.Monad.State.Class (class MonadState)
 import Control.Monad.Writer.Class (class MonadTell)
-import Data.Functor.Pairing (type (⋈))
+import Data.Functor.Pairing (type (⋈), sym)
 import Data.Identity (Identity(..))
 import Data.Newtype (unwrap)
 import Data.Tuple (Tuple(..))
@@ -70,3 +73,6 @@ instance monadStateCo :: ComonadStore s w => MonadState s (Co w) where
 
 instance monadTellCo :: ComonadTraced t w => MonadTell t (Co w) where
   tell t = Co \w -> track t w unit
+
+instance monadFreeCo :: (Functor f, ComonadCofree f w) => MonadFree (Co f) (Co w) where
+  wrapFree gco = Co \w -> sym pairCo runCo gco (unwrapCofree w)

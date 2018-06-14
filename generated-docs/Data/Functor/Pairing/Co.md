@@ -20,6 +20,7 @@ newtype Co w a
 (ComonadEnv e w) => MonadReader e (Co w)
 (ComonadStore s w) => MonadState s (Co w)
 (ComonadTraced t w) => MonadTell t (Co w)
+(Functor f, ComonadCofree f w) => MonadFree (Co f) (Co w)
 ```
 
 #### `co`

@@ -12,7 +12,7 @@
     "url": "git://github.com/paf31/purescript-pairing.git"
   },
   "dependencies": {
-    "purescript-free": "^5.0.0",
+    "purescript-free": "^5.1.0",
     "purescript-functors": "^3.0.0",
     "purescript-transformers": "^4.1.0"
   },
