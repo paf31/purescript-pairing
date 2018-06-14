@@ -12,12 +12,11 @@
     "url": "git://github.com/paf31/purescript-pairing.git"
   },
   "dependencies": {
-    "purescript-functors": "^2.0.0",
-    "purescript-identity": "^3.0.0",
-    "purescript-transformers": "^3.0.0",
-    "purescript-free": "#phil/monadfree"
+    "purescript-free": "^5.1.0",
+    "purescript-functors": "^3.0.0",
+    "purescript-transformers": "^4.1.0"
   },
   "devDependencies": {
-    "purescript-psci-support": "^3.0.0"
+    "purescript-psci-support": "^4.0.0"
   }
 }
